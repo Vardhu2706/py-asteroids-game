@@ -26,6 +26,15 @@ class Player(CircleShape):
 
         return [a, b, c]
     
+    # Rotate method
+    def rotate(self, dt):
+        self.rotation += (PLAYER_TURN_SPEED * dt)
+
+    # Move method
+    def move(self, dt):
+        forward = pygame.Vector2(0, 1).rotate(self.rotation)
+        self.position += forward * PLAYER_SPEED * dt
+    
     # Overriding Draw method
     def draw(self, screen):
         # Getting the points
@@ -38,3 +47,18 @@ class Player(CircleShape):
             points=points,
             width=2)
         
+    # Overriding Update method
+    def update(self, dt):
+        keys = pygame.key.get_pressed()
+
+        # Left and right
+        if keys[pygame.K_a]:
+            self.rotate(-dt)
+        elif keys[pygame.K_d]:
+            self.rotate(dt)
+        
+        # Up and down
+        elif keys[pygame.K_w]:
+            self.move(dt)
+        elif keys[pygame.K_s]:
+            self.move(-dt)

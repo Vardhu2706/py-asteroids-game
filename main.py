@@ -23,6 +23,16 @@ def main():
     y = SCREEN_HEIGHT / 2
     player = Player(x, y)
 
+    # Creating groups
+    updatable = pygame.sprite.Group() 
+    drawable = pygame.sprite.Group() 
+
+    # Add sprites to the groups
+    updatable.add(player)
+    drawable.add(player)
+
+    Player.containers = (updatable, drawable)
+
     # Game Loop
     while True:
         # Quit event interrupt
@@ -33,8 +43,13 @@ def main():
         # Fill
         pygame.Surface.fill(screen, (0,0,0))
 
+        # Updating player
+        for item in updatable:
+            item.update(dt)
+
         # Render player
-        player.draw(screen=screen)
+        for item in drawable:
+            item.draw(screen)
 
         # Refresh / Update
         pygame.display.flip()
