@@ -1,6 +1,10 @@
+import sys
 import pygame
 from constants import *
 from player import Player
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
+from shots import Shots
 
 def main():
     # Initializing PyGame
@@ -18,20 +22,24 @@ def main():
     # Init dt
     dt = 0
 
+    # Creating groups
+    updatable = pygame.sprite.Group() 
+    drawable = pygame.sprite.Group() 
+    asteroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
+
+    # Add sprites to the groups
+    Asteroid.containers = (asteroids, updatable, drawable)
+    AsteroidField.containers = updatable
+    Shots.containers = (shots, updatable, drawable) 
+    asteroid_field = AsteroidField()
+
+    Player.containers = (updatable, drawable)
+
     # Init player object
     x = SCREEN_WIDTH / 2
     y = SCREEN_HEIGHT / 2
     player = Player(x, y)
-
-    # Creating groups
-    updatable = pygame.sprite.Group() 
-    drawable = pygame.sprite.Group() 
-
-    # Add sprites to the groups
-    updatable.add(player)
-    drawable.add(player)
-
-    Player.containers = (updatable, drawable)
 
     # Game Loop
     while True:
@@ -40,12 +48,28 @@ def main():
             if event.type == pygame.QUIT:
                 return
 
-        # Fill
-        pygame.Surface.fill(screen, (0,0,0))
-
         # Updating player
         for item in updatable:
             item.update(dt)
+
+        # Check for collision
+        for asteroid in asteroids:
+            if asteroid.collides_with(player):
+                print("Game over!")
+                sys.exit()
+
+        # Check for hit
+        for asteroid in asteroids:
+            for shot in shots:
+                if asteroid.collides_with(shot):
+                    # Kill shot
+                    shot.kill()
+
+                    # Split Asteroid
+                    asteroid.split()
+                    
+        # Fill
+        pygame.Surface.fill(screen, (0,0,0))
 
         # Render player
         for item in drawable:

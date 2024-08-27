@@ -1,5 +1,6 @@
 # Player class, child of CircleShape
 from circleshape import CircleShape
+from shots import Shots
 import pygame
 from constants import *
 
@@ -14,6 +15,7 @@ class Player(CircleShape):
 
         self.position = pygame.Vector2(x, y)
         self.rotation = 0
+        self.timer = 0
 
     # Triangle method - returns corner coordinates
     def triangle(self):
@@ -34,6 +36,15 @@ class Player(CircleShape):
     def move(self, dt):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         self.position += forward * PLAYER_SPEED * dt
+
+    # Shoot method
+    def shoot(self):
+
+        # Rate limit
+        if not self.timer > 0:
+            new_shot = Shots(self.position.x, self.position.y,  SHOT_RADIUS)
+            new_shot.velocity = pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOOT_SPEED
+            self.timer = PLAYER_SHOOT_COOLDOWN
     
     # Overriding Draw method
     def draw(self, screen):
@@ -49,6 +60,10 @@ class Player(CircleShape):
         
     # Overriding Update method
     def update(self, dt):
+
+        # Decreasing timer
+        self.timer -= dt
+
         keys = pygame.key.get_pressed()
 
         # Left and right
@@ -62,3 +77,7 @@ class Player(CircleShape):
             self.move(dt)
         elif keys[pygame.K_s]:
             self.move(-dt)
+
+        # Launch missiles
+        elif keys[pygame.K_SPACE]:
+            self.shoot()
