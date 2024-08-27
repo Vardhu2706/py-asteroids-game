@@ -8,7 +8,6 @@ A simple, classic asteroids game built with Python. Navigate your spaceship thro
 
 - Classic arcade-style gameplay
 - Keyboard controls for navigation and shooting
-- Increasing difficulty with time
 
 ## How to Play
 
