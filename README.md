@@ -1,4 +1,4 @@
-# Py-Asteroids-Game
+# Asteroids Game
 
 A simple, classic asteroids game built with Python. Navigate your spaceship through space, avoiding and destroying asteroids to survive as long as possible.
 
